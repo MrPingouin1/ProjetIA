@@ -35,7 +35,13 @@ public class QLearningAgent extends RLAgent {
 			Environnement _env) {
 		super(alpha, gamma,_env);
 		qvaleurs = new HashMap<Etat,HashMap<Action,Double>>();
+		
+		
+	
 	}
+
+
+	
 	
 	/**
 	 * renvoi la (les) action(s) de plus forte(s) valeur(s) dans l'etat e
@@ -76,6 +82,15 @@ public class QLearningAgent extends RLAgent {
 	
 	@Override
 	public void setQValeur(Etat e, Action a, double d) {
+		HashMap<Action,Double> etat = qvaleurs.get(e);
+		Double valeur = etat.get(a);
+		if(valeur == null){
+			etat.put(a,d);
+		}else{
+
+		}
+
+
 		//*** VOTRE CODE
 		
 		
@@ -104,6 +119,15 @@ public class QLearningAgent extends RLAgent {
 			System.out.println("QL mise a jour etat "+e+" action "+a+" etat' "+esuivant+ " r "+reward);
 
 		//*** VOTRE CODE
+		HashMap<Action,Double> etat = qvaleurs.get(e);
+		if(etat.isEmpty()){
+			HashMap<Action,Double> actionReward = new HashMap<>();
+			actionReward.put(a,reward);
+			qvaleurs.put(e,actionReward);
+		}else{
+			this.setQValeur(e,a,reward);
+		}
+
 	}
 
 	@Override

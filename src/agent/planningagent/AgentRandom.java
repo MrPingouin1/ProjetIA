@@ -43,7 +43,7 @@ public class AgentRandom extends PlanningValueAgent{
 
 	@Override
 	public void updateV() {
-				System.out.println("agent random ne fait pas de mise a jour");
+		System.out.println("agent random ne fait pas de mise a jour");
 	}
 
 	@Override

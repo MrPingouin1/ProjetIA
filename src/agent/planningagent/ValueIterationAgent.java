@@ -70,7 +70,8 @@ public class ValueIterationAgent extends PlanningValueAgent{
 		//*** MON CODE
 		try {
 			HashMap<Etat, Double> newV = new HashMap<>();
-
+			this.vmin = Double.MAX_VALUE;
+			this.vmax = Double.MIN_VALUE;
 			for (Etat s : mdp.getEtatsAccessibles()) {
 				double max = Double.MIN_VALUE;
 				double value;
@@ -82,10 +83,14 @@ public class ValueIterationAgent extends PlanningValueAgent{
 					}
 					if (value > max)
 						max = value;
+
+					if(value > vmax)
+						this.vmax = value;
+					if(value < vmin)
+						this.vmin = value;
 				}
 				newV.put(s, max);
 			}
-
 			V = newV;
 		}
 		catch(Exception e){

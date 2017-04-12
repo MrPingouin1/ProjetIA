@@ -3,6 +3,7 @@ package agent.rlagent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.util.Pair;
 import environnement.Action;
@@ -67,41 +68,39 @@ public class QLearningAgent extends RLAgent {
 	
 	@Override
 	public double getValeur(Etat e) {
-		//*** VOTRE CODE
-		return 0.0;
-		
+		HashMap<Action,Double> etat = qvaleurs.get(e);
+		double max = 0;
+
+		if(etat != null) {
+			for (Map.Entry<Action, Double> entry : etat.entrySet()) {
+				if (entry.getValue() > max)
+					max = entry.getValue();
+			}
+		}
+
+		return max;
 	}
 
 	@Override
 	public double getQValeur(Etat e, Action a) {
-		//*** VOTRE CODE
-		return 0;
+		if(qvaleurs.get(e) == null || qvaleurs.get(e).get(a) == null)
+			return 0;
+
+		return qvaleurs.get(e).get(a);
 	}
 	
 	
 	
 	@Override
 	public void setQValeur(Etat e, Action a, double d) {
-		HashMap<Action,Double> etat = qvaleurs.get(e);
-		Double valeur = etat.get(a);
-		if(valeur == null){
-			etat.put(a,d);
-		}else{
+		qvaleurs.get(e).put(a,d);
 
-		}
+		if(d > vmax)
+			vmax = d;
+		if(d < vmin)
+			vmin = d;
 
-
-		//*** VOTRE CODE
-		
-		
-		// mise a jour vmax et vmin pour affichage du gradient de couleur:
-				//vmax est la valeur de max pour tout s de V
-				//vmin est la valeur de min pour tout s de V
-				// ...
-		
-		
 		this.notifyObs();
-		
 	}
 	
 	
@@ -118,16 +117,20 @@ public class QLearningAgent extends RLAgent {
 		if (RLAgent.DISPRL)
 			System.out.println("QL mise a jour etat "+e+" action "+a+" etat' "+esuivant+ " r "+reward);
 
-		//*** VOTRE CODE
 		HashMap<Action,Double> etat = qvaleurs.get(e);
-		if(etat.isEmpty()){
+		if(etat == null){
 			HashMap<Action,Double> actionReward = new HashMap<>();
 			actionReward.put(a,reward);
 			qvaleurs.put(e,actionReward);
 		}else{
-			this.setQValeur(e,a,reward);
+			Double valeur = etat.get(a);
+			if(valeur == null){
+				valeur = reward;
+			}else{
+				valeur = (1-alpha)*valeur + alpha*(reward + gamma*this.getQValeur(esuivant,a));
+			}
+			this.setQValeur(e,a,valeur);
 		}
-
 	}
 
 	@Override

@@ -54,47 +54,37 @@ public class QLearningAgent extends RLAgent {
 		// retourne action de meilleures valeurs dans _e selon Q : utiliser getQValeur()
 		// retourne liste vide si aucune action legale (etat terminal)
 
-		List<Action> returnactions = this.getActionsLegales(e);
+		List<Action> returnactions = new ArrayList<>();
 
 		if (this.getActionsLegales(e).size() == 0){//etat  absorbant; impossible de le verifier via environnement
 			System.out.println("aucune action legale");
 			return new ArrayList<Action>();
 		}
 
-		double max = - Double.MAX_VALUE;
-		double valeur;
-		HashMap<Action,Double> etat = qvaleurs.get(e);
-		if(etat != null) {
-			for (Map.Entry<Action, Double> entry : etat.entrySet()) {
-				valeur = this.getQValeur(e, entry.getKey());
-				if (valeur >= max) {
-					if (valeur > max) {
-						returnactions.clear();
-						max = valeur;
-					}
-					returnactions.add(entry.getKey());
-				}
+		Double valeurMax = this.getValeur(e);
+		for (Action action : this.getActionsLegales(e)) {
+			if (this.getQValeur(e, action) == valeurMax) {
+				returnactions.add(action);
 			}
 		}
 
+		if(returnactions.isEmpty())
+			returnactions = this.getActionsLegales(e);
+
 		return returnactions;
-		
-		
 	}
 	
 	@Override
 	public double getValeur(Etat e) {
-		HashMap<Action,Double> etat = qvaleurs.get(e);
-		double max = 0.0;
-
-		if(etat != null) {
-			for (Map.Entry<Action, Double> entry : etat.entrySet()) {
-				if (entry.getValue() > max)
-					max = entry.getValue();
-			}
+		Double valeur = 0.0;
+		HashMap<Action,Double> etat = this.qvaleurs.get(e);
+		if(etat != null){
+			valeur = etat.entrySet()
+					.stream()
+					.max((entry1, entry2) -> getQValeur(e, entry1.getKey()) > getQValeur(e, entry2.getKey()) ? 1 : -1)
+					.map(Map.Entry::getValue).orElse(0.0);
 		}
-
-		return max;
+		return valeur;
 	}
 
 	@Override

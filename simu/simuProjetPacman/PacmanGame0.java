@@ -17,7 +17,7 @@ public class PacmanGame0 {
 	public static void main(String args[]) throws MazeException
 	{
 		//lecture du fichier layout et remplissage des donnees dans Maze
-		MazePacman maze=new MazePacman("pacmanlayouts/originalClassic.lay");
+		MazePacman maze=new MazePacman("pacmanlayouts/SmallGrid.lay");
 		//mis a jour etat du jeu
 		StateGamePacman state=new StateGamePacman(maze);
 		//creation du jeu

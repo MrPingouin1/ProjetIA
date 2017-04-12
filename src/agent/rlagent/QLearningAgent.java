@@ -53,14 +53,31 @@ public class QLearningAgent extends RLAgent {
 	public List<Action> getPolitique(Etat e) {
 		// retourne action de meilleures valeurs dans _e selon Q : utiliser getQValeur()
 		// retourne liste vide si aucune action legale (etat terminal)
-		List<Action> returnactions = new ArrayList<Action>();
+
+		List<Action> returnactions = this.getActionsLegales(e);
+
 		if (this.getActionsLegales(e).size() == 0){//etat  absorbant; impossible de le verifier via environnement
 			System.out.println("aucune action legale");
 			return new ArrayList<Action>();
 			
 		}
-		
-		//*** VOTRE CODE
+
+		double max = 0.0;
+		double valeur;
+		HashMap<Action,Double> etat = qvaleurs.get(e);
+		if(etat != null) {
+			for (Map.Entry<Action, Double> entry : etat.entrySet()) {
+				valeur = this.getQValeur(e, entry.getKey());
+				if (valeur >= max) {
+					if (valeur > max) {
+						returnactions.clear();
+						max = valeur;
+					}
+					returnactions.add(entry.getKey());
+				}
+			}
+		}
+
 		return returnactions;
 		
 		
@@ -127,7 +144,7 @@ public class QLearningAgent extends RLAgent {
 			if(valeur == null){
 				valeur = reward;
 			}else{
-				valeur = (1-alpha)*valeur + alpha*(reward + gamma*this.getQValeur(esuivant,a));
+				valeur = (1-alpha)*valeur + alpha*(reward + gamma*this.getValeur(esuivant));
 			}
 			this.setQValeur(e,a,valeur);
 		}
@@ -142,9 +159,7 @@ public class QLearningAgent extends RLAgent {
 	@Override
 	public void reset() {
 		super.reset();
-		//*** VOTRE CODE
-		
-		this.episodeNb =0;
+		qvaleurs.clear();
 		this.notifyObs();
 	}
 

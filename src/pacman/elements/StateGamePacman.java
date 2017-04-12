@@ -583,8 +583,8 @@ public class StateGamePacman implements Etat//TODO verifier hashcode, equals et 
 	 * @return l'etat du fantome i {@link StateAgentPacman}
 	 */
 	public StateAgentPacman getGhostState(int i) {return(ghosts_states.get(i));}
-	
-	/**
+
+	 /**
 	 * @return le nombre de nourriture mangee
 	 */
 	public int getFoodEaten() {	return foodEaten; }

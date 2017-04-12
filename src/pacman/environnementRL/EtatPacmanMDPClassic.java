@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pacman.elements.MazePacman;
 import pacman.elements.StateAgentPacman;
 import pacman.elements.StateGamePacman;
 import environnement.Etat;
@@ -32,9 +33,10 @@ public class EtatPacmanMDPClassic implements Etat , Cloneable{
 		}
 
 		listDot = new ArrayList<>();
-		for (int i = 0; i < _stategamepacman.getMaze().getSizeX(); i++) {
-			for (int j = 0; j < _stategamepacman.getMaze().getSizeY(); j++) {
-				if(!_stategamepacman.getMaze().isFood(i,j))
+		MazePacman maze = _stategamepacman.getMaze();
+		for (int i = 0; i < maze.getSizeX(); i++) {
+			for (int j = 0; j < maze.getSizeY(); j++) {
+				if(maze.isFood(i,j))
 					listDot.add(new Point(i,j));
 			}
 		}
@@ -43,6 +45,18 @@ public class EtatPacmanMDPClassic implements Etat , Cloneable{
 	@Override
 	public String toString() {
 		return "" ;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		EtatPacmanMDPClassic that = (EtatPacmanMDPClassic) o;
+
+		if (listPacman != null ? !listPacman.equals(that.listPacman) : that.listPacman != null) return false;
+		if (listGhost != null ? !listGhost.equals(that.listGhost) : that.listGhost != null) return false;
+		return listDot != null ? listDot.equals(that.listDot) : that.listDot == null;
 	}
 
 	@Override
